@@ -4,15 +4,15 @@ import os
 from typing import Optional
 import datetime
 
+from pydantic import BaseModel
 from git import Repo
 from git.exc import NoSuchPathError, InvalidGitRepositoryError
 import frontmatter
 
-class Entry():
-    def __init__(self, date: datetime.date, content: str, metadata: Optional[dict] = None):
-        self.date: datetime.date = date
-        self.content: str = content
-        self.metadata: dict = metadata or {} # not used yet
+class Entry(BaseModel):
+    date: datetime.date
+    content: str
+    metadata: dict = {}
 
     def __repr__(self):
         return f"Entry(date={self.date}, entry={self.content})"

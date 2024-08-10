@@ -28,10 +28,11 @@ window.onload = function () {
 
   function set_entry_remote(date, entry) {
     // send post request to server
-    fetch(`/entry/${date}`, {
+    fetch(`/entry/`, {
       method: "POST",
       body: JSON.stringify({
-        entry: entry,
+        date: date,
+        content: entry,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +63,7 @@ window.onload = function () {
       .then((response) => {
         if (!response.ok) {
           if (response.status == 404) {
-            return { entry: "" };
+            return { content: "" };
           }
           throw new Error(`HTTP error: ${response.status}`);
         }
@@ -70,10 +71,10 @@ window.onload = function () {
       })
       .then((data) => {
         console.log(data);
-        document.getElementById("diary-field").value = data.entry;
+        document.getElementById("diary-field").value = data.content;
 
         // if entry is not empty, expand the dashboard
-        if (data.entry) {
+        if (data.content) {
           on_submit_success();
         }
       })
