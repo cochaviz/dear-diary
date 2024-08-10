@@ -40,8 +40,8 @@ body {
   flex-direction: column;
   justify-content: space-between;
 
+  font-family: "Noto Emoji";
   font-family: "Noto Serif", serif;
-  /* font-family: "Noto Sans", sans-serif; */
 }
 
 header,
