@@ -46,7 +46,7 @@
         <ul>
           {% for entry in relevant_entries %}
           <li>
-            <a href="/">{{ entry | replace("/", " / ") }}</a>
+            <a href="/{{ entry }}">{{ entry }}</a>
           </li>
           {% endfor %}
         </ul>
