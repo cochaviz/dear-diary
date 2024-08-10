@@ -12,15 +12,6 @@ window.onload = function () {
 
   submit_button.addEventListener("click", submit_entry);
 
-  // FIXME: Now done server-side
-  // function current_date() {
-  //   let today = new Date();
-  //   let dd = String(today.getDate()).padStart(2, "0");
-  //   let mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  //   let yyyy = today.getFullYear();
-  //   return `${yyyy}-${mm}-${dd}`;
-  // }
-
   function submit_entry() {
     let diary_entry = document.getElementById("diary-field").value;
     set_entry_remote(date, diary_entry);
@@ -40,7 +31,7 @@ window.onload = function () {
     })
       .then((response) => {
         if (!response.ok) {
-          if (response.status == 400) {
+          if (response.status == 422) {
             throw new Error("Please enter a diary entry");
           }
           throw new Error(`HTTP error: ${response.status}`);
@@ -140,6 +131,6 @@ window.onload = function () {
     alert_message.innerHTML = message;
   }
 
-  // check whether we have an entry for today and display it
+  // check whether we have an entry for the date and display it
   get_entry_remote(date);
 };

@@ -3,11 +3,11 @@ import datetime
 # from flask import Flask, render_template, request, url_for, redirect
 from fastapi import FastAPI
 from fastapi.requests import Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from entries import Entry, EntryManager, GitBackend
+from entries import Entry, EntryManager, GitBackend, Message
 
 # app = Flask(__name__)
 app = FastAPI()
@@ -71,11 +71,21 @@ def post_entry(entry: Entry):
     }
 
 
-@app.get("/entry/{entry_date}")
+@app.get(
+    "/entry/{entry_date}",
+    response_model=Entry,
+    responses= {
+        404: { "model": Message, "description": "Entry not found." },
+    }
+)
 def get_entry(entry_date: str):
     with EntryManager(entry_manager_backend) as entry_manager:
         entry = entry_manager.get_entry(datetime.date.fromisoformat(entry_date))
         if entry is None:
-            return { "error": "Entry not found" }, 404
+            return JSONResponse(
+                status_code=404, 
+                content={ "message": f"Entry for {entry_date} not found." }
+            )
         return entry
+
 

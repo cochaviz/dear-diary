@@ -4,15 +4,29 @@ import os
 from typing import Optional
 import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from git import Repo
 from git.exc import NoSuchPathError, InvalidGitRepositoryError
 import frontmatter
+from typing import Annotated, TypeAlias
+
+from pydantic import BeforeValidator
+
+
+class Message(BaseModel):
+    message: str
+    
 
 class Entry(BaseModel):
     date: datetime.date
     content: str
     metadata: dict = {}
+
+    @validator('content')
+    def content_must_not_be_empty(cls, v):
+        if v == '':
+            raise ValueError('Content is not allowed to be empty.')
+        return v
 
     def __repr__(self):
         return f"Entry(date={self.date}, entry={self.content})"
