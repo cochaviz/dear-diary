@@ -7,8 +7,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 # local imports
-from core.models import Entry, Message
-from core.database import EntryManager, GitBackend
+from dear_diary.core.models import Entry, Message
+from dear_diary.core.database import EntryManager, GitBackend
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")

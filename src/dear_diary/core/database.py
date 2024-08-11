@@ -6,7 +6,7 @@ import frontmatter
 from git import InvalidGitRepositoryError, NoSuchPathError, Repo
 
 # local imports
-from core.models.entry import Entry
+from dear_diary.core.models.entry import Entry
 
 class Backend():
     def read_entries(self) -> list[Entry]:
