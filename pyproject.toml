@@ -7,7 +7,7 @@ authors = [
 ]
 dependencies = [
     "gitpython>=3.1.43",
-    "fastapi>=0.112.0",
+    "fastapi[standard]>=0.112.0",
     "python-frontmatter>=1.1.0",
 ]
 readme = "README.md"
@@ -26,3 +26,6 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/dear_diary"]
+
+[tool.rye.scripts]
+devserver = "fastapi dev main.py --reload"
