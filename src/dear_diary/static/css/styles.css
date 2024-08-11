@@ -20,8 +20,9 @@
   --side-bar-gap: 2%;
   --side-bar-margin: 60px;
 
-  --button-max-width: 50px;
-  --button-min-width: 50px;
+  /* --button-max-width: 100px; */
+  /* --button-min-width: 20%; */
+  --button-width: 100px;
 
   --shadow-raise: -4px 4px 0px 0px rgba(0, 0, 0, 0.2);
   --shadow-down: -0px 0px 0px 0px rgba(0, 0, 0, 0.7);
@@ -49,7 +50,6 @@ body {
 header,
 footer {
   min-height: var(--header-footer-height);
-  margin: 1%;
 
   /* necessary to vertically align content of flex container */
   display: flex;
@@ -295,10 +295,25 @@ button {
 
 /* so far for mobile first... */
 @media (max-width: 1250px) {
+  .material-symbols-outlined {
+    font-size: 50px;
+  }
+
+  body {
+    h1 {
+      font-size: 60px;
+    }
+    font-size: 15px;
+  }
+
+  footer {
+    display: none;
+  }
+
   main {
     display: flex;
     flex-direction: column;
-    margin: 0px 20px;
+    margin: var(--side-bar-gap);
 
     textarea {
       flex-grow: 1;
