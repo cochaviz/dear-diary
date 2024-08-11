@@ -14,12 +14,14 @@
   /* assumed to be 0px since outlines don't have radii */
   --border-radius: 0px;
 
-  --header-footer-height: 80px;
+  --header-footer-height: 5%;
 
   --main-text-field-width: 40%;
-  --side-bar-gap: 30px;
+  --side-bar-gap: 2%;
   --side-bar-margin: 60px;
-  --button-width: 50px;
+
+  --button-max-width: 50px;
+  --button-min-width: 50px;
 
   --shadow-raise: -4px 4px 0px 0px rgba(0, 0, 0, 0.2);
   --shadow-down: -0px 0px 0px 0px rgba(0, 0, 0, 0.7);
@@ -47,6 +49,7 @@ body {
 header,
 footer {
   min-height: var(--header-footer-height);
+  margin: 1%;
 
   /* necessary to vertically align content of flex container */
   display: flex;
@@ -94,6 +97,9 @@ textarea {
 }
 
 button {
+  max-width: var(--button-max-width);
+  min-width: var(--button-min-width);
+
   background-color: var(--foreground-color);
 
   border: 0px solid var(--foreground-color);
@@ -105,6 +111,7 @@ button {
 
   span {
     color: white;
+    width: 100%;
   }
   &:hover {
     box-shadow: var(--shadow-raise);
@@ -144,82 +151,67 @@ button {
 
 #dashboard {
   display: grid;
-  grid-template-columns: var(--button-width) 0fr 0fr;
+  grid-template-columns: auto 0fr;
   grid-template-rows: 1fr 1fr 1fr;
   gap: 20px 15px;
+  grid-auto-flow: column;
 
   transition: all 0.5s;
 
-  #question {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  #submit {
-    grid-column: 1;
-    grid-row: 2;
-  }
-  #search {
-    grid-column: 1;
-    grid-row: 3;
-  }
   /* invisible by default */
-  textarea {
-    grid-column: 2;
-    grid-row: 1;
-    margin: 0px;
+  textarea, #question-container, .text-low-importance {
     display: none;
   }
+
   .text-low-importance {
-    grid-column: 2;
     grid-row: 2 / 4;
-    display: none;
-  }
-  #question-submit {
-    grid-column: 3;
-    grid-row: 1;
-    display: none;
   }
 
   &.collapsed {
-    grid-template-columns: var(--button-width) 0fr 0fr;
+    grid-template-columns: auto 0fr;
 
     textarea {
-      display: none;
+      display: block;
     }
-    #question-submit {
-      display: none;
-    }
-    .text-low-importance {
+    #question-container, .text-low-importance {
       display: none;
     }
   }
   &.expand-stage-one {
-    grid-template-columns: var(--button-width) 1fr var(--button-width);
+    grid-template-columns: auto 1fr;
 
     textarea {
       display: block;
     }
-    #question-submit {
-      display: block;
+    #question-container {
+      display: flex;
     }
     .text-low-importance {
       display: none;
     }
   }
   &.expand-stage-two {
-    grid-template-columns: var(--button-width) 1fr var(--button-width);
+    grid-template-columns: auto 1fr;
 
-    textarea {
+    textarea, .text-low-importance {
       display: block;
     }
-    #question-submit {
-      display: block;
-    }
-    .text-low-importance {
-      display: block;
+    #question-container {
+      display: flex;
     }
   }
 }
+
+#question-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+
+  textarea {
+    font-size: large;
+    width: 100%;
+  }
+} 
 
 .text-low-importance {
   border: 2px solid var(--foreground-color-transparent);
@@ -298,5 +290,63 @@ button {
     #alert-success-icon {
       display: block;
     }
+  }
+}
+
+/* so far for mobile first... */
+@media (max-width: 1250px) {
+  main {
+    display: flex;
+    flex-direction: column;
+    margin: 0px 20px;
+
+    textarea {
+      flex-grow: 1;
+    }
+    .side-bar {
+      margin: 0px;
+    }
+  }
+
+  #dashboard {
+    height: var(--button-width);
+    grid-template-columns: 1fr 1fr 2fr;
+    grid-template-rows: 1fr;
+    grid-auto-flow: row;
+
+    &.collapsed {
+      grid-template-columns: 1fr 1fr 2fr;
+      grid-template-rows: 1fr;
+    }
+    &.expand-stage-one {
+      grid-template-columns: 1fr 1fr 2fr;
+      grid-template-rows: 1fr 4fr;
+    }
+    &.expand-stage-two {
+      grid-template-columns: 1fr 1fr 2fr;
+      grid-template-rows: 1fr 4fr 4fr;
+    }
+
+    #question-container {
+      grid-column: 1 / 4;
+      
+      button {
+        max-height: 100%;
+      }
+    }
+    .text-low-importance{
+      grid-column: 1 / 4;
+    }
+  }
+
+  #related {
+    display: none;
+  }
+
+  button {
+    max-width: none;
+    min-width: none;
+    max-height: var(--button-max-width);
+    min-height: var(--button-min-width);
   }
 }

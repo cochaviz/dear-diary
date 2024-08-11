@@ -2,9 +2,7 @@
 name = "dear-diary"
 version = "0.1.0"
 description = "Add your description here"
-authors = [
-    { name = "Zohar Cochavi", email = "cochavi.zohar@protonmail.com" }
-]
+authors = [{ name = "Zohar Cochavi", email = "cochavi.zohar@protonmail.com" }]
 dependencies = [
     "gitpython>=3.1.43",
     "fastapi[standard]>=0.112.0",
