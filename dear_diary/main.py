@@ -1,15 +1,15 @@
 import datetime
 
-# from flask import Flask, render_template, request, url_for, redirect
 from fastapi import FastAPI
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from entries import Entry, EntryManager, GitBackend, Message
+# local imports
+from core.models import Entry, Message
+from core.database import EntryManager, GitBackend
 
-# app = Flask(__name__)
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -17,14 +17,14 @@ templates = Jinja2Templates("templates")
 entry_manager_backend = GitBackend("entries")
 
 @app.get("/")
-def home(request: Request):
+def show_diary_today(request: Request):
     """
     Redirect to entry of the current day.
     """
-    return RedirectResponse(url=f"/{datetime.date.today()}", status_code=302)
+    return show_diary(str(datetime.date.today()), request)
 
 @app.get("/{entry_date}", response_class=HTMLResponse)
-def index(entry_date: str, request: Request):
+def show_diary(entry_date: str, request: Request):
     try:
         date = datetime.date.fromisoformat(entry_date) 
         if date > datetime.date.today():
@@ -51,24 +51,17 @@ def index(entry_date: str, request: Request):
         }
         return templates.TemplateResponse(request, "index.html", context)
 
-@app.post("/entry/")
+@app.post(
+    "/entry/",
+    response_model=Message,
+)
 def post_entry(entry: Entry):
-    """
-    Get (GET) or add (POST) an entry for a specific date. Format of date is
-    YYYY-MM-DD, and the entry is expected to be in JSON format where the key
-    is "entry" and the value is the content of the entry.
-
-    Status codes:
-        400: Entry is empty or not provided.
-        404: Entry not found.
-        405: Invalid request.
-    """
     with EntryManager(entry_manager_backend) as entry_manager:
         entry_manager.add_entry(entry)
 
-    return { 
+    return JSONResponse(content={
         "message": f"Entry for added for {entry.date} was successfully added!", 
-    }
+    })
 
 
 @app.get(
