@@ -1,29 +1,41 @@
 window.onload = function () {
-  // get dashboard and collapse it
-  let dashboard = document.getElementById("dashboard");
-  let dashboard_default_classes = ["side-bar"];
 
+  let form = document.getElementById("entry-form");
+  let response_field = document.getElementById("response-field");
+  let input_field = document.getElementById("input-field");
+
+  let back_button = document.getElementById("back");
   let question_button = document.getElementById("question");
-  let question_open_icon = document.getElementById("question-open-icon");
-  let question_close_icon = document.getElementById("question-close-icon");
-  let question_submit_button = document.getElementById("question-submit");
-  let submit_button = document.getElementById("submit");
   let search_button = document.getElementById("search");
+  let submit_button = document.getElementById("submit");
 
-  submit_button.addEventListener("click", submit_entry);
+  back_button.addEventListener("click", change_to_tab("entry", entry_tab_settings, post_entry));
+  question_button.addEventListener("click", change_to_tab("question", question_tab_settings, post_question));
+  search_button.addEventListener("click", change_to_tab("search", search_tab_settings, post_search));
 
-  function submit_entry() {
-    let diary_entry = document.getElementById("diary-field").value;
-    set_entry_remote(date, diary_entry);
+  // make sure content is saved when switching tabs
+  let content = {}
+  new ClassWatcher(form, on_tab_switch);
+  function on_tab_switch(old_name, new_name) {
+    content[old_name] = input_field.value;
+    input_field.value = content[new_name] || "";
   }
 
-  function set_entry_remote(date, entry) {
+  // TODO Implement
+  function post_question() {
+    console.log("post_question");
+  }
+  function post_search() {
+    console.log("post_search");
+  }
+
+  function post_entry() {
     // send post request to server
     fetch(`/entry/`, {
       method: "POST",
       body: JSON.stringify({
         date: date,
-        content: entry,
+        content: input_field.value,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +53,6 @@ window.onload = function () {
       .then((data) => {
         console.log(data);
         show_alert(data.message, "success");
-        on_submit_success();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -49,7 +60,7 @@ window.onload = function () {
       });
   }
 
-  function get_entry_remote(date) {
+  function get_content() {
     return fetch(`/entry/${date}`)
       .then((response) => {
         if (!response.ok) {
@@ -62,11 +73,10 @@ window.onload = function () {
       })
       .then((data) => {
         console.log(data);
-        document.getElementById("diary-field").value = data.content;
+        input_field.value = data.content;
 
-        // if entry is not empty, expand the dashboard
         if (data.content) {
-          on_submit_success();
+          on_has_content();
         }
       })
       .catch((error) => {
@@ -75,52 +85,42 @@ window.onload = function () {
       });
   }
 
-  function on_submit_success() {
+  function on_has_content() {
     question_button.disabled = false;
     search_button.disabled = false;
-    question_button.addEventListener("click", dashboard_expand_stage_one);
-    question_submit_button.addEventListener(
-      "click",
-      dashboard_expand_stage_two
-    );
   }
 
-  function dashboard_expand_stage_one() {
-    // set classes
-    dashboard.classList = [];
-    dashboard.classList.add("expand-stage-one");
-    dashboard_default_classes.forEach((element) => {
-      dashboard.classList.add(element);
-    });
-    // make sure we can collapse it
-    question_button.addEventListener("click", dashboard_collapse);
-    question_button.removeEventListener("click", dashboard_expand_stage_one);
-    // change icon
-    question_open_icon.style.display = "none";
-    question_close_icon.style.display = "block";
+  function change_to_tab(name, tab_function, submit_callback) {
+    return function() {
+      tab_function();
+      form.classList = [name];
+
+      // all the benefits of a form without the page refresh!
+      form.onsubmit = function (_) {
+        submit_callback();
+        return false;
+      } 
+    }
   }
 
-  function dashboard_expand_stage_two() {
-    dashboard.classList = [];
-    dashboard.classList.add("expand-stage-two");
-    dashboard_default_classes.forEach((element) => {
-      dashboard.classList.add(element);
-    });
+  function entry_tab_settings() {
+    search_button.disabled = false;
+    question_button.disabled = false;
+    back_button.disabled = true;
   }
 
-  function dashboard_collapse() {
-    // reset classes
-    dashboard.classList = [];
-    dashboard.classList.add("collapsed");
-    dashboard_default_classes.forEach((element) => {
-      dashboard.classList.add(element);
-    });
-    // make sure we can expand it
-    question_button.addEventListener("click", dashboard_expand_stage_one);
-    question_button.removeEventListener("click", dashboard_collapse);
-    // change icon
-    question_open_icon.style.display = "block";
-    question_close_icon.style.display = "none";
+  function question_tab_settings() {
+    question_button.disabled = true;
+    search_button.disabled = false;
+    back_button.disabled = false;
+    input_field.placeholder = "How did my sentiment change over the last week?";
+  }
+
+  function search_tab_settings() {
+    search_button.disabled = true;
+    question_button.disabled = false;
+    back_button.disabled = false;
+    input_field.placeholder = "Two weeks ago";
   }
 
   function show_alert(message, type) {
@@ -131,6 +131,46 @@ window.onload = function () {
     alert_message.innerHTML = message;
   }
 
-  // check whether we have an entry for the date and display it
-  get_entry_remote(date);
+  // entry tab is default
+  change_to_tab("entry", entry_tab_settings, post_entry)();
+  get_content(date);
 };
+
+
+class ClassWatcher {
+
+    constructor(targetNode, classSwitchedCallback) {
+        this.targetNode = targetNode
+        this.classSwitchedCallback = classSwitchedCallback
+        this.observer = null
+        console.log(targetNode)
+        this.lastClassState = targetNode.classList[0]
+
+        this.init()
+    }
+
+    init() {
+        this.observer = new MutationObserver(this.mutationCallback)
+        this.observe()
+    }
+
+    observe() {
+        this.observer.observe(this.targetNode, { attributes: true })
+    }
+
+    disconnect() {
+        this.observer.disconnect()
+    }
+
+    mutationCallback = mutationsList => {
+        for(let mutation of mutationsList) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                let currentClassState = mutation.target.classList[0]
+                if(this.lastClassState !== currentClassState) {
+                    this.classSwitchedCallback(this.lastClassState, currentClassState)
+                    this.lastClassState = currentClassState
+                }
+            }
+        }
+    }
+}

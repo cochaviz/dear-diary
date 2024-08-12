@@ -58,6 +58,7 @@ def show_diary(entry_date: str, request: Request):
 def post_entry(entry: Entry):
     with EntryManager(entry_manager_backend) as entry_manager:
         entry_manager.add_entry(entry)
+        print(entry_manager.entries)
 
     return JSONResponse(content={
         "message": f"Entry for added for {entry.date} was successfully added!", 

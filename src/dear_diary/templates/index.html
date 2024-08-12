@@ -54,7 +54,7 @@
   </head>
 
   <body>
-    <div id="alert-box">
+    <div id="alert-box" style="display: none">
       <span id="alert-error-icon" class="material-symbols-outlined">
         warning
       </span>
@@ -66,62 +66,32 @@
     <header>
       <h1>Dear Diary</h1>
     </header>
-    <main>
-      <div class="text-low-importance side-bar" id="related">
-        {% if relevant_entries %}
-        <h4>Relevant Entries</h4>
-        <ul>
-          {% for entry in relevant_entries %}
-          <li>
-            <a href="/{{ entry }}">{{ entry }}</a>
-          </li>
-          {% endfor %}
-        </ul>
-
-        {% endif %}
-      </div>
+    <form id="entry-form">
       <textarea
-        id="diary-field"
+        id="input-field"
+        class="entry"
+        name="content"
         placeholder="{{ diary_entry_placeholder }}"
+        form="entry-form"
+        required
       ></textarea>
-      <div class="side-bar" id="dashboard">
-        <button id="question" disabled="true">
-          <span
-            id="question-open-icon"
-            class="material-symbols-outlined"
-            style="display: block"
-          >
-            psychology_alt
-          </span>
-          <span
-            id="question-close-icon"
-            class="material-symbols-outlined"
-            style="display: none"
-          >
-            left_panel_close
-          </span>
+      <textarea id="response-field" disabled></textarea>
+      <div id="button-stack">
+        <button id="back" class="low-importance" disabled type="button">
+          <span class="material-symbols-outlined"> arrow_back </span>
         </button>
-        <button id="search" disabled="true">
+        <button id="question" class="low-importance" disabled type="button">
+          <span class="material-symbols-outlined"> psychology_alt </span>
+        </button>
+        <button id="search" class="low-importance" disabled type="button">
           <span class="material-symbols-outlined"> search </span>
         </button>
-        <button id="submit">
+        <button id="submit" form="entry-form" type="submit">
           <span class="material-symbols-outlined">
             subdirectory_arrow_right
           </span>
         </button>
-        <div id="question-container">
-        <textarea id="question-field"></textarea>
-        <button id="question-submit">
-          <span class="material-symbols-outlined">
-            subdirectory_arrow_right
-          </span>
-        </button>
-        </div>
-        <div class="text-low-importance"></div>
       </div>
-    </main>
-    <footer>
-      <h2>{{ entry_number }}</h2>
-    </footer>
+    </form>
   </body>
 </html>
