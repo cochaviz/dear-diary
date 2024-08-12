@@ -130,8 +130,9 @@ form {
 
 #button-stack {
   position: absolute;
-  height: 5%;
+  height: auto;
   width: 60%;
+  aspect-ratio: 5/1;
 
   right: calc(2 * var(--space-between));
   bottom: calc(2 * var(--space-between));

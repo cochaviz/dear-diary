@@ -1,17 +1,17 @@
 window.onload = function () {
 
   let form = document.getElementById("entry-form");
-  let response_field = document.getElementById("response-field");
+  // let response_field = document.getElementById("response-field");
   let input_field = document.getElementById("input-field");
 
   let back_button = document.getElementById("back");
   let question_button = document.getElementById("question");
   let search_button = document.getElementById("search");
-  let submit_button = document.getElementById("submit");
+  // let submit_button = document.getElementById("submit");
 
-  back_button.addEventListener("click", change_to_tab("entry", entry_tab_settings, post_entry));
-  question_button.addEventListener("click", change_to_tab("question", question_tab_settings, post_question));
-  search_button.addEventListener("click", change_to_tab("search", search_tab_settings, post_search));
+  back_button.addEventListener("pointerup", change_to_tab("entry", entry_tab_settings, post_entry));
+  question_button.addEventListener("pointerup", change_to_tab("question", question_tab_settings, post_question));
+  search_button.addEventListener("pointerup", change_to_tab("search", search_tab_settings, post_search));
 
   // make sure content is saved when switching tabs
   let content = {}
