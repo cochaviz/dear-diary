@@ -111,7 +111,7 @@ class GitBackend(Backend):
         self.repo.index.add(self._markdown_files_in(str(self.repo.working_dir)))
         self.repo.index.commit("Update entries")
 
-    def synced(self, _: list[Entry]) -> bool:
+    def synced(self, entries: list[Entry]) -> bool:
         return self.repo.is_dirty() 
 
 class EntryManager():
@@ -134,6 +134,5 @@ class EntryManager():
         return self
 
     def __exit__(self, *_):
-        if not self.backend.synced(self.entries):
-            self.backend.write_entries(self.entries)
+        self.backend.write_entries(self.entries)
         
