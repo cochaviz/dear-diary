@@ -71,6 +71,7 @@ window.onload = function () {
       .then((data) => {
         console.log(data);
         set_entry_content(input_field.value);
+        show_alert(data.message, "success");
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -91,9 +92,9 @@ window.onload = function () {
       })
       .then((data) => {
         console.log(data);
-        set_entry_content(data.content);
 
         if (data.content) {
+          set_entry_content(data.content);
           entry_tab_settings();
         }
       })
@@ -129,6 +130,10 @@ window.onload = function () {
     // after content has been set, we can enable the buttons
     // since some depend on the content (input_field.value)
     tab_settings();
+
+    // testing:
+    show_alert(`Switched to ${new_tab}`, "info");
+    console.log("Entry tab settings applied, response_field disabled:", response_field.disabled);
   }
 
   window.addEventListener("beforeunload", unsaved_changes_handler);
@@ -143,21 +148,21 @@ window.onload = function () {
     question_button.disabled = remote_content.length == 0;
     search_button.disabled = remote_content.length == 0;
     back_button.disabled = true;
-    response_field.disabled = true;
+    response_field.classList = ["hidden"];
   }
 
   const question_tab_settings = () => {
     question_button.disabled = true;
     search_button.disabled = false;
     back_button.disabled = false;
-    response_field.disabled = false;
+    response_field.classList = [];
   }
 
   const search_tab_settings = () => {
     search_button.disabled = true;
     question_button.disabled = false;
     back_button.disabled = false;
-    response_field.disabled = false;
+    response_field.classList = [];
   }
 
   function show_alert(message, type) {

@@ -16,7 +16,6 @@
   --max-width: 800px;
 
   --shadow-default: 0px 3px 5px 2px rgba(0, 0, 0, 0.2);
-  /* shadow on hover  */
   --shadow-up: 0px 5px 8px 3px rgba(0, 0, 0, 0.2);
 }
 
@@ -68,8 +67,8 @@ textarea, #response-field {
   outline-color: var(--accent-one);
   border-radius: var(--border-radius);
 
-  transition: height 0.3s ease;
-  transition: flex-grow 0.3s ease;
+  transition: height 0.3s ease-in-out;
+  transition: flex-grow 0.3s ease-in-out;
 
   &:focus {
     outline-width: var(--border-width);
@@ -82,10 +81,11 @@ textarea, #response-field {
 #response-field {
   border: var(--border-width) solid var(--foreground-color);
   background-color: transparent;
+  flex-grow: 1;
 
-  &[disabled] {
+  &.hidden {
     padding: 0px;
-    border: none;
+    border-width: 0px;
     flex-grow: 0;
   }
 }
@@ -111,9 +111,6 @@ textarea, #response-field {
   &.search {
     gap: var(--space-between);
 
-    #response-field {
-      flex-grow: 1;
-    }
     #input-field {
       flex-grow: 0;
     }
@@ -147,6 +144,8 @@ button {
 
   box-shadow: var(--shadow-default);
 
+  transition: all 0.05s ease-in-out;
+
   &[disabled] {
     display: none;
   }
@@ -154,6 +153,10 @@ button {
   &.low-importance {
     background-color: var(--accent-one);
     flex-grow: 1;
+
+    &[disabled] {
+      flex-grow: 0;
+    }
   }
   
   &#submit {
@@ -162,12 +165,19 @@ button {
 
   &:hover {
     box-shadow: var(--shadow-up);
+    transform: translateY(-2px);
   }
 }
 
-
 #alert-box {
   position: absolute;
+  left: var(--gap-between);
+  top: var(--gap-between);
+
+  &.info {
+    background-color: var(--accent-one);
+    display: block;
+  }
 }
 
 @media (width >= 1000px) {
