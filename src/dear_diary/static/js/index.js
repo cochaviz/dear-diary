@@ -11,8 +11,9 @@ window.onload = function () {
   let alert_box = document.getElementById("alert-box");
   let alert_message = document.getElementById("alert-message");
 
-  let is_submitting = false;
   let remote_content = "";
+  let is_submitting = false;
+  let is_dirty = false;
 
   // make sure content is saved when switching tabs
   let content = {}
@@ -69,8 +70,7 @@ window.onload = function () {
       })
       .then((data) => {
         console.log(data);
-        show_alert(data.message, "success");
-        remote_content = input_field.value;
+        set_entry_content(input_field.value);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -79,7 +79,7 @@ window.onload = function () {
   }
 
   function get_content() {
-    return fetch(`/entry/${date}`)
+    fetch(`/entry/${date}`)
       .then((response) => {
         if (!response.ok) {
           if (response.status == 404) {
@@ -91,8 +91,7 @@ window.onload = function () {
       })
       .then((data) => {
         console.log(data);
-        input_field.value = data.content;
-        remote_content = data.content;
+        set_entry_content(data.content);
 
         if (data.content) {
           entry_tab_settings();
@@ -104,11 +103,17 @@ window.onload = function () {
       });
   }
 
+  function set_entry_content(value) {
+    remote_content = value;
+    input_field.value = value;
+    is_dirty = false;
+  }
+
   const unsaved_changes_handler = (event) => {
-    if (remote_content !== input_field.value && !is_submitting) {
+    if (is_dirty && !is_submitting) {
       event.preventDefault();
+      event.returnValue = true;
     }
-    event.returnValue = true;
   }
 
   function change_to_tab(new_tab, tab_settings) {
@@ -127,6 +132,12 @@ window.onload = function () {
   }
 
   window.addEventListener("beforeunload", unsaved_changes_handler);
+
+  input_field.addEventListener("input", () => {
+    if (form.classList[0] == "entry" ) {
+      is_dirty = input_field.value !== remote_content;
+    }
+  });
 
   const entry_tab_settings = () => {
     question_button.disabled = remote_content.length == 0;
