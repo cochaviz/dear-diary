@@ -66,32 +66,29 @@
     <header>
       <h1>Dear Diary</h1>
     </header>
-    <form id="entry-form">
+    <div id="entry-form" class="entry">
       <textarea
         id="input-field"
-        class="entry"
         name="content"
         placeholder="{{ diary_entry_placeholder }}"
-        form="entry-form"
-        required
       ></textarea>
-      <div id="response-field"></div>
+      <div id="response-field" disabled></div>
       <div id="button-stack">
-        <button id="back" class="low-importance" disabled type="button">
+        <button id="back" class="low-importance" disabled>
           <span class="material-symbols-outlined"> arrow_back </span>
         </button>
-        <button id="question" class="low-importance" disabled type="button">
+        <button id="question" class="low-importance" disabled>
           <span class="material-symbols-outlined"> psychology_alt </span>
         </button>
-        <button id="search" class="low-importance" disabled type="button">
+        <button id="search" class="low-importance" disabled>
           <span class="material-symbols-outlined"> search </span>
         </button>
-        <button id="submit" form="entry-form" type="submit">
+        <button id="submit">
           <span class="material-symbols-outlined">
             subdirectory_arrow_right
           </span>
         </button>
       </div>
-    </form>
+    </div>
   </body>
 </html>

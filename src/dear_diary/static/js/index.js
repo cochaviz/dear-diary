@@ -1,17 +1,18 @@
 window.onload = function () {
-
   let form = document.getElementById("entry-form");
-  // let response_field = document.getElementById("response-field");
+  let response_field = document.getElementById("response-field");
   let input_field = document.getElementById("input-field");
 
   let back_button = document.getElementById("back");
   let question_button = document.getElementById("question");
   let search_button = document.getElementById("search");
-  // let submit_button = document.getElementById("submit");
+  let submit_button = document.getElementById("submit");
 
-  back_button.addEventListener("pointerup", function () { change_to_tab("entry", entry_tab_settings, post_entry) });
-  question_button.addEventListener("pointerup", function () { change_to_tab("question", question_tab_settings, post_question) });
-  search_button.addEventListener("pointerup", function () { change_to_tab("search", search_tab_settings, post_search) });
+  let alert_box = document.getElementById("alert-box");
+  let alert_message = document.getElementById("alert-message");
+
+  let is_submitting = false;
+  let remote_content = "";
 
   // make sure content is saved when switching tabs
   let content = {}
@@ -21,17 +22,22 @@ window.onload = function () {
     "search": "Two weeks ago",
   }
 
-  // when the class changes, we have to save the content and placeholder
-  new ClassWatcher(form, on_tab_switch);
+  back_button.addEventListener("pointerup",  () => { change_to_tab("entry", entry_tab_settings) });
+  question_button.addEventListener("pointerup",  () => { change_to_tab("question", question_tab_settings) });
+  search_button.addEventListener("pointerup",  () => { change_to_tab("search", search_tab_settings) });
 
-  function on_tab_switch(old_name, new_name) {
-    // save content and placeholder
-    content[old_name] = input_field.value;
-    input_field.value = content[new_name] || "";
+  submit_button.addEventListener("pointerup", () => {
+    is_submitting = true;
 
-    placeholder[old_name] = input_field.placeholder;
-    input_field.placeholder = placeholder[new_name] || "";
-  }
+    if (form.classList[0] == "entry") {
+      post_entry();
+    } else if (form.classList[0] == "question") {
+      post_question();
+    } else if (form.classList[0] == "search") {
+      post_search();
+    }
+    is_submitting = false;
+  });
 
   // TODO Implement
   function post_question() {
@@ -42,7 +48,6 @@ window.onload = function () {
   }
 
   function post_entry() {
-    // send post request to server
     fetch(`/entry/`, {
       method: "POST",
       body: JSON.stringify({
@@ -65,6 +70,7 @@ window.onload = function () {
       .then((data) => {
         console.log(data);
         show_alert(data.message, "success");
+        remote_content = input_field.value;
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -86,9 +92,10 @@ window.onload = function () {
       .then((data) => {
         console.log(data);
         input_field.value = data.content;
+        remote_content = data.content;
 
-        if (!data.content) {
-          on_has_no_content();
+        if (data.content) {
+          entry_tab_settings();
         }
       })
       .catch((error) => {
@@ -97,88 +104,55 @@ window.onload = function () {
       });
   }
 
-  function on_has_no_content() {
-    question_button.disabled = true;
-    search_button.disabled = true;
+  const unsaved_changes_handler = (event) => {
+    if (remote_content !== input_field.value && !is_submitting) {
+      event.preventDefault();
+    }
+    event.returnValue = true;
   }
 
-  function change_to_tab(name, tab_function, submit_callback) {
-    tab_function();
-    form.classList = [name];
+  function change_to_tab(new_tab, tab_settings) {
+    old_tab = form.classList[0];
+    form.classList = [new_tab];
 
-    // all the benefits of a form without the page refresh!
-    form.onsubmit = function (_) {
-      submit_callback();
-      return false;
-    } 
+    content[old_tab] = input_field.value;
+    input_field.value = content[new_tab] || "";
+
+    placeholder[old_tab] = input_field.placeholder;
+    input_field.placeholder = placeholder[new_tab] || "";
+
+    // after content has been set, we can enable the buttons
+    // since some depend on the content (input_field.value)
+    tab_settings();
   }
 
-  function entry_tab_settings() {
-    search_button.disabled = false;
-    question_button.disabled = false;
+  window.addEventListener("beforeunload", unsaved_changes_handler);
+
+  const entry_tab_settings = () => {
+    question_button.disabled = remote_content.length == 0;
+    search_button.disabled = remote_content.length == 0;
     back_button.disabled = true;
+    response_field.disabled = true;
   }
 
-  function question_tab_settings() {
+  const question_tab_settings = () => {
     question_button.disabled = true;
     search_button.disabled = false;
     back_button.disabled = false;
+    response_field.disabled = false;
   }
 
-  function search_tab_settings() {
+  const search_tab_settings = () => {
     search_button.disabled = true;
     question_button.disabled = false;
     back_button.disabled = false;
+    response_field.disabled = false;
   }
 
   function show_alert(message, type) {
-    let alert_box = document.getElementById("alert-box");
-    let alert_message = document.getElementById("alert-message");
-
     alert_box.classList = [type];
     alert_message.innerHTML = message;
   }
 
-  // entry tab is default
-  change_to_tab("entry", entry_tab_settings, post_entry);
   get_content(date);
 };
-
-
-class ClassWatcher {
-
-    constructor(targetNode, classSwitchedCallback) {
-        this.targetNode = targetNode
-        this.classSwitchedCallback = classSwitchedCallback
-        this.observer = null
-        console.log(targetNode)
-        this.lastClassState = targetNode.classList[0]
-
-        this.init()
-    }
-
-    init() {
-        this.observer = new MutationObserver(this.mutationCallback)
-        this.observe()
-    }
-
-    observe() {
-        this.observer.observe(this.targetNode, { attributes: true })
-    }
-
-    disconnect() {
-        this.observer.disconnect()
-    }
-
-    mutationCallback = mutationsList => {
-        for(let mutation of mutationsList) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                let currentClassState = mutation.target.classList[0]
-                if(this.lastClassState !== currentClassState) {
-                    this.classSwitchedCallback(this.lastClassState, currentClassState)
-                    this.lastClassState = currentClassState
-                }
-            }
-        }
-    }
-}

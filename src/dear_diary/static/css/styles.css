@@ -75,19 +75,20 @@ textarea, #response-field {
     outline-color: var(--accent-one);
     box-shadow: none;
   }
-
-  &[disabled] {
-    border: var(--border-width) solid var(--foreground-color);
-    background-color: transparent;
-  }
 }
 
 #response-field {
   border: var(--border-width) solid var(--foreground-color);
   background-color: transparent;
+
+  &[disabled] {
+    padding: 0px;
+    border: none;
+    flex-grow: 0;
+  }
 }
 
-form {
+#entry-form {
   flex-grow: 1;
   margin: 0px;
   padding-bottom: var(--space-between);
@@ -95,24 +96,19 @@ form {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--space-between);
-
-  &.entry {
-    #response-field {
-      flex-grow: 0;
-      padding: 0px;
-      border: none;
-    }
-    gap: 0px;
-  }
+  gap: 0px;
 
   &.question {
+    gap: var(--space-between);
+
     #response-field {
-      flex-grow: 1;
+      flex-grow: 2;
     }
   }
 
   &.search {
+    gap: var(--space-between);
+
     #response-field {
       flex-grow: 1;
     }
