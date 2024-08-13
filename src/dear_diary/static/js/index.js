@@ -87,8 +87,8 @@ window.onload = function () {
         console.log(data);
         input_field.value = data.content;
 
-        if (data.content) {
-          on_has_content();
+        if (!data.content) {
+          on_has_no_content();
         }
       })
       .catch((error) => {
@@ -97,9 +97,9 @@ window.onload = function () {
       });
   }
 
-  function on_has_content() {
-    question_button.disabled = false;
-    search_button.disabled = false;
+  function on_has_no_content() {
+    question_button.disabled = true;
+    search_button.disabled = true;
   }
 
   function change_to_tab(name, tab_function, submit_callback) {
@@ -140,7 +140,7 @@ window.onload = function () {
   }
 
   // entry tab is default
-  change_to_tab("entry", entry_tab_settings, post_entry)();
+  change_to_tab("entry", entry_tab_settings, post_entry);
   get_content(date);
 };
 
