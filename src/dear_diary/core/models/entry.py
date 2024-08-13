@@ -1,4 +1,5 @@
 import datetime
+
 from pydantic import BaseModel, field_validator
 
 
@@ -7,11 +8,11 @@ class Entry(BaseModel):
     content: str
     metadata: dict = {}
 
-    @field_validator('content')
+    @field_validator("content")
     @classmethod
     def content_must_not_be_empty(cls, v):
-        if v == '':
-            raise ValueError('Content is not allowed to be empty.')
+        if v == "":
+            raise ValueError("Content is not allowed to be empty.")
         return v
 
     def __repr__(self):
@@ -39,7 +40,7 @@ class Entry(BaseModel):
         if not isinstance(other, Entry):
             return NotImplemented
         return self.date > other.date
-    
+
     def __ge__(self, other):
         if not isinstance(other, Entry):
             return NotImplemented
@@ -49,6 +50,6 @@ class Entry(BaseModel):
         if not isinstance(other, Entry):
             return NotImplemented
         return self.date != other.date
-    
+
     def __str__(self):
         return f"{self.date}: {self.content}"
