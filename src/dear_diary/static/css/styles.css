@@ -15,7 +15,7 @@
 
   --max-width: 800px;
 
-  --shadow-default: 0px 0px 5px 2px rgba(0, 0, 0, 0.2);
+  --shadow-default: 0px 3px 5px 2px rgba(0, 0, 0, 0.2);
 }
 
 html {
@@ -46,7 +46,7 @@ header  {
   padding: 0px var(--space-between);
 }
 
-textarea {
+textarea, #response-field {
   font-size: inherit;
   font-weight: inherit;
   text-decoration: none;
@@ -67,6 +67,7 @@ textarea {
   border-radius: var(--border-radius);
 
   transition: height 0.3s ease;
+  transition: flex-grow 0.3s ease;
 
   &:focus {
     outline-width: var(--border-width);
@@ -79,10 +80,11 @@ textarea {
     border: var(--border-width) solid var(--foreground-color);
     background-color: transparent;
   }
+}
 
-  #response-field {
-    transition: all 0.3s ease;
-  }
+#response-field {
+  border: var(--border-width) solid var(--foreground-color);
+  background-color: transparent;
 }
 
 form {
@@ -92,38 +94,30 @@ form {
 
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   gap: var(--space-between);
 
   &.entry {
     #response-field {
-      transition: all 0.3s ease;
-      height: calc(5% + 3*var(--space-between) - 4*var(--border-width));
-      border-color: var(--background-color-alt);
       flex-grow: 0;
+      padding: 0px;
+      border: none;
     }
+    gap: 0px;
   }
 
   &.question {
     #response-field {
-      transition: all 0.3s ease;
-      height: initial;
-      border-color: var(--foreground-color);
       flex-grow: 1;
     }
   }
 
   &.search {
     #response-field {
-      transition: all 0.3s ease;
-      height: initial;
-      border-color: var(--foreground-color);
       flex-grow: 1;
     }
     #input-field {
-      height: fit-content;
-      border-color: var(--foreground-color);
-      flex-grow: initial;
+      flex-grow: 0;
     }
   }
 }

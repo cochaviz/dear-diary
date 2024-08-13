@@ -9,16 +9,28 @@ window.onload = function () {
   let search_button = document.getElementById("search");
   // let submit_button = document.getElementById("submit");
 
-  back_button.addEventListener("pointerup", change_to_tab("entry", entry_tab_settings, post_entry));
-  question_button.addEventListener("pointerup", change_to_tab("question", question_tab_settings, post_question));
-  search_button.addEventListener("pointerup", change_to_tab("search", search_tab_settings, post_search));
+  back_button.addEventListener("pointerup", function () { change_to_tab("entry", entry_tab_settings, post_entry) });
+  question_button.addEventListener("pointerup", function () { change_to_tab("question", question_tab_settings, post_question) });
+  search_button.addEventListener("pointerup", function () { change_to_tab("search", search_tab_settings, post_search) });
 
   // make sure content is saved when switching tabs
   let content = {}
+  let placeholder = {
+    "entry": input_field.placeholder || "What's on your mind?",
+    "question": "How did my sentiment change over the last week?",
+    "search": "Two weeks ago",
+  }
+
+  // when the class changes, we have to save the content and placeholder
   new ClassWatcher(form, on_tab_switch);
+
   function on_tab_switch(old_name, new_name) {
+    // save content and placeholder
     content[old_name] = input_field.value;
     input_field.value = content[new_name] || "";
+
+    placeholder[old_name] = input_field.placeholder;
+    input_field.placeholder = placeholder[new_name] || "";
   }
 
   // TODO Implement
@@ -91,16 +103,14 @@ window.onload = function () {
   }
 
   function change_to_tab(name, tab_function, submit_callback) {
-    return function() {
-      tab_function();
-      form.classList = [name];
+    tab_function();
+    form.classList = [name];
 
-      // all the benefits of a form without the page refresh!
-      form.onsubmit = function (_) {
-        submit_callback();
-        return false;
-      } 
-    }
+    // all the benefits of a form without the page refresh!
+    form.onsubmit = function (_) {
+      submit_callback();
+      return false;
+    } 
   }
 
   function entry_tab_settings() {
@@ -113,14 +123,12 @@ window.onload = function () {
     question_button.disabled = true;
     search_button.disabled = false;
     back_button.disabled = false;
-    input_field.placeholder = "How did my sentiment change over the last week?";
   }
 
   function search_tab_settings() {
     search_button.disabled = true;
     question_button.disabled = false;
     back_button.disabled = false;
-    input_field.placeholder = "Two weeks ago";
   }
 
   function show_alert(message, type) {
