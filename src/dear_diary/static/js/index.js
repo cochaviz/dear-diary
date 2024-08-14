@@ -40,6 +40,12 @@ window.onload = function () {
     is_submitting = false;
   });
 
+  alert_box.addEventListener("pointerup", () => {
+    // has to be like this because otherwise it fucks up
+    // alert_box.style.opacity = 0;
+    alert_box.classList = [];
+  });
+
   // TODO Implement
   function post_question() {
     console.log("post_question");
