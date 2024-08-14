@@ -136,10 +136,6 @@ window.onload = function () {
     // after content has been set, we can enable the buttons
     // since some depend on the content (input_field.value)
     tab_settings();
-
-    // testing:
-    show_alert(`Switched to ${new_tab}`, "info");
-    console.log("Entry tab settings applied, response_field disabled:", response_field.disabled);
   }
 
   window.addEventListener("beforeunload", unsaved_changes_handler);
