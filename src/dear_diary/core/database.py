@@ -129,6 +129,9 @@ class EntryManager:
                 return entry
         return None
 
+    def get_entries(self, start_date: datetime.date, end_date: datetime.date):
+        return [entry for entry in self.entries if start_date <= entry.date <= end_date]
+
     def __enter__(self):
         self.entries = self.backend.read_entries()
         return self

@@ -1,5 +1,6 @@
 import datetime
 
+import parsedatetime
 from fastapi import FastAPI
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
@@ -18,18 +19,14 @@ templates = Jinja2Templates("templates")
 entry_manager_backend = GitBackend("entries")
 
 
-@app.get("/")
-def show_diary_today(request: Request):
-    """
-    Redirect to entry of the current day.
-    """
-    return show_diary(str(datetime.date.today()), request)
+@app.get("/", response_class=HTMLResponse)
+def show_diary(request: Request, date: str = str(datetime.date.today())):
+    if not date:
+        return RedirectResponse(url="/", status_code=302)
 
-
-@app.get("/{entry_date}", response_class=HTMLResponse)
-def show_diary(entry_date: str, request: Request):
     try:
-        date = datetime.date.fromisoformat(entry_date)
+        date = datetime.date.fromisoformat(date)
+
         if date > datetime.date.today():
             raise ValueError("Date cannot be in the future")
     except ValueError:
@@ -85,3 +82,34 @@ def get_entry(entry_date: str):
                 content={"message": f"Entry for {entry_date} not found."},
             )
         return entry
+
+
+@app.get(
+    "/search",
+)
+def search(query: str, search_range: int = 7):
+    if query == "":
+        return JSONResponse(
+            status_code=422,
+            content={"message": "Query cannot be empty. Please provide a valid query."},
+        )
+
+    cal = parsedatetime.Calendar()
+
+    query_parsed, query_success = cal.parse(query)
+    query_date = datetime.date(*query_parsed[:3])
+    search_range = datetime.timedelta(days=search_range)
+
+    if query_success == 0:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "message": "Invalid query or search range. Please provide a valid date or date range."
+            },
+        )
+
+    with EntryManager(entry_manager_backend) as entry_manager:
+        entries = entry_manager.get_entries(
+            query_date - search_range, query_date + search_range
+        )
+        return entries
