@@ -55,6 +55,8 @@ markupsafe==2.1.5
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
+parsedatetime==2.6
+    # via dear-diary
 pydantic==2.8.2
     # via fastapi
 pydantic-core==2.20.1

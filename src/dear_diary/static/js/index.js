@@ -35,7 +35,7 @@ window.onload = function () {
     } else if (form.classList[0] == "question") {
       post_question();
     } else if (form.classList[0] == "search") {
-      post_search();
+      get_search();
     }
     is_submitting = false;
   });
@@ -50,9 +50,33 @@ window.onload = function () {
   function post_question() {
     console.log("post_question");
   }
-  function post_search() {
-    console.log("post_search");
+
+  function get_search() {
+    let query = input_field.value;
+
+    fetch(`/search?query=${query}`)
+      .then((response) => {
+        if (!response.ok) {
+          if (response.status == 400) {
+            throw new Error("Invalid query format, please try something else");
+          } else if (response.status == 422) {
+            throw new Error("Please provide a query");
+          }
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        createDateLinksList(
+          data.map(entry => entry.date), response_field
+        );
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        show_alert(error, "error");
+      });
   }
+
 
   function post_entry() {
     fetch(`/entry/`, {
@@ -174,3 +198,19 @@ window.onload = function () {
 
   get_content(date);
 };
+
+function createDateLinksList(dates, parentElement) {
+    const ul = document.createElement('ul');
+    
+    dates.forEach(dateString => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        
+        a.href = `/?date=${encodeURIComponent(dateString)}`;
+        a.textContent = dateString;
+
+        li.appendChild(a);
+        ul.appendChild(li);
+    });
+    parentElement.appendChild(ul);
+}
