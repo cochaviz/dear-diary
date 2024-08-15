@@ -61,10 +61,10 @@ body {
   }
 }
 
-h1 > a {
+a {
   color: black;
-  text-underline-offset: 0.1em;
-  text-decoration-thickness: 0.05em;
+  text-underline-offset: 0.11em;
+  text-decoration-thickness: 0.09em;
   text-decoration-color: var(--accent-one);
 
   &:hover {
@@ -116,6 +116,24 @@ textarea, #response-field {
     padding: 0px;
     border-width: 0px;
     flex-grow: 0;
+  }
+
+  ul {
+    padding: 0px;
+    margin: 0px;
+
+    li {
+      list-style-type: none;
+      padding: var(--space-between);
+      margin-bottom : var(--space-between);
+      /* border-bottom: var(--border-width) solid transparent; */
+      background-color: var(--background-color-alt);
+      border-radius: var(--border-radius);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 }
 
