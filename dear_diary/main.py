@@ -24,13 +24,16 @@ def we_are_frozen():
 
 
 def module_path():
-    # encoding = sys.getfilesystemencoding()
     if we_are_frozen():
         return os.path.dirname(sys.executable)
     return os.path.dirname(__file__)
 
 
-app.mount("/static", StaticFiles(directory=os.path.join(module_path())), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory=os.path.join(module_path(), "static/")),
+    name="static",
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,19 +43,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-templates = Jinja2Templates("templates")
+templates = Jinja2Templates(os.path.join(module_path(), "templates"))
 entry_manager_backend = GitBackend("entries")
 
 
 @app.get("/", response_class=HTMLResponse)
-def show_diary(request: Request, date_raw: Optional[str] = None):
-    if not date_raw:
-        date_raw = str(datetime.date.today())
+def show_diary(request: Request, date: Optional[str] = None):
+    if not date:
+        date = str(datetime.date.today())
 
     try:
-        date = datetime.date.fromisoformat(date_raw)
+        date_parsed = datetime.date.fromisoformat(date)
 
-        if date > datetime.date.today():
+        if date_parsed > datetime.date.today():
             raise ValueError("Date cannot be in the future")
     except ValueError:
         # FIXME: should probably return an error message to the user
@@ -60,7 +63,7 @@ def show_diary(request: Request, date_raw: Optional[str] = None):
 
     with EntryManager(entry_manager_backend) as entry_manager:
         # get the index of the current entry in the sorted entries
-        if entry := entry_manager.get_entry(date):
+        if entry := entry_manager.get_entry(date_parsed):
             entry_number = sorted(entry_manager.entries).index(entry) + 1
         else:
             entry_number = len(entry_manager.entries) + 1
@@ -69,8 +72,8 @@ def show_diary(request: Request, date_raw: Optional[str] = None):
             "relevant_entries": list(
                 map(lambda single_entry: single_entry.date, entry_manager.entries[:5])
             ),
-            "diary_entry_placeholder": f"Entry for {date}...",
-            "date": date,
+            "diary_entry_placeholder": f"Entry for {date_parsed}...",
+            "date": date_parsed,
             "entry_number": entry_number,
         }
         return templates.TemplateResponse(request, "index.html", context)

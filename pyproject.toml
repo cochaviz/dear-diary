@@ -13,7 +13,7 @@ readme = "README.md"
 requires-python = ">= 3.12"
 
 [project.scripts]
-start-dev = "fastapi dev dear_diary --reload"
+start-dev = "python -m dear_diary"
 
 [build-system]
 requires = ["hatchling"]
@@ -30,4 +30,4 @@ allow-direct-references = true
 packages = ["dear_diary"]
 
 [tool.rye.scripts]
-devserver = "fastapi dev dear_diary --app app --reload"
+devserver = "dear_diary"

@@ -102,6 +102,7 @@ window.onload = function () {
         console.log(data);
         set_entry_content(input_field.value);
         show_alert(data.message, "success");
+        entry_tab_settings();  // enable buttons
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -171,6 +172,7 @@ window.onload = function () {
   });
 
   const entry_tab_settings = () => {
+    console.log(remote_content.length);
     question_button.disabled = remote_content.length == 0;
     search_button.disabled = remote_content.length == 0;
     back_button.disabled = true;
@@ -195,11 +197,13 @@ window.onload = function () {
     alert_box.classList = [type];
     alert_message.innerHTML = message;
   }
-
   get_content(date);
 };
 
 function createDateLinksList(dates, parentElement) {
+    if (parentElement.children.length > 0) {
+        parentElement.removeChild(parentElement.children[0]);
+    }
     const ul = document.createElement('ul');
     
     dates.forEach(dateString => {
