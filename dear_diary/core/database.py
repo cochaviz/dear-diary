@@ -1,21 +1,23 @@
 import datetime
 import glob
 import os
+from abc import ABC, abstractmethod
 
 import frontmatter
-
-# local imports
-from dear_diary.core.models.entry import Entry
 from git import InvalidGitRepositoryError, NoSuchPathError, Repo
 
+from dear_diary.core.models.entry import Entry
 
-class Backend:
+
+class Backend(ABC):
+    @abstractmethod
     def read_entries(self) -> list[Entry]:
         """
         Reads the entries from the backend and returns them as a list.
         """
         raise NotImplementedError()
 
+    @abstractmethod
     def write_entries(self, entries: list[Entry]):
         """
         Writes the entries to the backend.
@@ -25,6 +27,7 @@ class Backend:
         """
         raise NotImplementedError()
 
+    @abstractmethod
     def synced(self, entries: list[Entry]) -> bool:
         """
         Returns True if the backend is in sync with the local entries.
@@ -32,6 +35,15 @@ class Backend:
         The backend is considered to be in sync if the entries in the
         backend are the same as the entries in the list. The order of
         the entries is not important.
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def clear(self):
+        """
+        Clears the backend of all entries.
+
+        Ensure that this operation is not destructive.
         """
         raise NotImplementedError()
 
@@ -112,6 +124,30 @@ class GitBackend(Backend):
 
     def synced(self, entries: list[Entry]) -> bool:
         return self.repo.is_dirty()
+
+
+class MultipleBackend(Backend):
+    def __init__(self, backends: list[Backend], use_first_as_reference=True):
+        self.backends = backends
+
+        if not len(self.backends) > 0:
+            raise ValueError("At least one backend is required.")
+        if not self.synced() and not use_first_as_reference:
+            raise RuntimeError(f"Backends {self.backends} are not in sync.")
+
+    def read_entries(self) -> list[Entry]:
+        for backend in self.backends:
+            entries = backend.read_entries()
+            if entries:
+                return entries
+        return []
+
+    def write_entries(self, entries: list[Entry]):
+        for backend in self.backends:
+            backend.write_entries(entries)
+
+    def synced(self, entries: list[Entry]) -> bool:
+        return all([backend.synced(entries) for backend in self.backends])
 
 
 class EntryManager:

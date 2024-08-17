@@ -12,6 +12,9 @@ dependencies = [
 readme = "README.md"
 requires-python = ">= 3.12"
 
+[project.scripts]
+start-dev = "fastapi dev dear_diary --reload"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -24,7 +27,7 @@ dev-dependencies = []
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/dear_diary"]
+packages = ["dear_diary"]
 
 [tool.rye.scripts]
-devserver = "fastapi dev main.py --reload"
+devserver = "fastapi dev dear_diary --app app --reload"

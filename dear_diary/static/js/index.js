@@ -35,7 +35,7 @@ window.onload = function () {
     } else if (form.classList[0] == "question") {
       post_question();
     } else if (form.classList[0] == "search") {
-      get_search();
+      search();
     }
     is_submitting = false;
   });
@@ -51,7 +51,7 @@ window.onload = function () {
     console.log("post_question");
   }
 
-  function get_search() {
+  function search() {
     let query = input_field.value;
 
     fetch(`/search?query=${query}`)
