@@ -16,7 +16,7 @@ RUN PYTHONDONTWRITEBYTECODE=1 pip install --no-cache-dir -r requirements.lock
 
 # Copy the source code into the container
 # and update the working directory
-COPY dear_diary .
+COPY dear_diary /app/dear_diary
 WORKDIR /app/dear_diary
 
 # Run the FastAPI server on port 80 when Docker container starts
