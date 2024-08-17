@@ -7,6 +7,7 @@ window.onload = function () {
   let question_button = document.getElementById("question");
   let search_button = document.getElementById("search");
   let submit_button = document.getElementById("submit");
+  let dark_mode_button = document.getElementById("dark-mode");
 
   let alert_box = document.getElementById("alert-box");
   let alert_message = document.getElementById("alert-message");
@@ -28,6 +29,7 @@ window.onload = function () {
   back_button.addEventListener("pointerup",  () => { change_to_tab("entry", entry_tab_settings) });
   question_button.addEventListener("pointerup",  () => { change_to_tab("question", question_tab_settings) });
   search_button.addEventListener("pointerup",  () => { change_to_tab("search", search_tab_settings) });
+  dark_mode_button.addEventListener("pointerup", toggle_color_scheme);
 
   submit_button.addEventListener("pointerup", () => {
     is_submitting = true;
@@ -213,7 +215,33 @@ window.onload = function () {
     alert_box.classList = [type];
     alert_message.innerHTML = message;
   }
+
+  function set_color_scheme_light() {
+    document.body.classList = ["light"];
+    dark_mode_button.classList = ["set-dark"]
+  }
+
+  function set_color_scheme_dark() {
+    document.body.classList = ["dark"];
+    dark_mode_button.classList = ["set-light"]
+  }
+
+  function toggle_color_scheme() {
+    if (document.body.classList[0] == "dark") {
+      set_color_scheme_light();
+    } else {
+      set_color_scheme_dark();
+    }
+  }
+
+  // default page behavior
   get_content(date);
+
+  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    set_color_scheme_dark();
+  } else {
+    set_color_scheme_light();
+  }
 };
 
 function createDateLinksList(dates, parentElement) {

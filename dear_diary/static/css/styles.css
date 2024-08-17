@@ -1,14 +1,31 @@
 :root {
-  --background-color: #d5c7bc;
-  --background-color-alt: #E6DDD7;
-  --foreground-color: #464f51;
+  /* color light */
+
+  --background-color-light: #f3e7e2;
+  --background-color-alt-light: #E6DDD7;
+  --foreground-color-light: #464f51;
+  --text-color-light: #000;
+
+  --primary-color-light: #ad5376;
+  --secondary-color-light: #cfa19b;
+
+  --success-color-light: #00a693;
+  --failure-color-light: #a63446;
+
+  /* color dark */
 
   --background-color-dark: #2d3142;
-  --foreground-color-dark: #fff;
+  --background-color-alt-dark: #414555;
+  --foreground-color-dark: #464f51;
+  --text-color-dark: #fff;
 
-  --accent-one: #969591;
-  --accent-two: #00a693;
-  --accent-three: #a63446;
+  --primary-color-dark: #ad5376;
+  --secondary-color-dark: #6b4755;
+
+  --success-color-dark: #05685c;
+  --failure-color-dark: #57242b;
+
+  /* layout parameters */
 
   --border-radius: 10px;
   --border-width: 4px;
@@ -18,6 +35,32 @@
 
   --shadow-default: 0px 3px 5px 1px rgba(0, 0, 0, 0.2);
   --shadow-up: 0px 5px 8px 2px rgba(0, 0, 0, 0.15);
+}
+
+.light {
+  --background-color: var(--background-color-light);
+  --background-color-alt: var(--background-color-alt-light);
+  --foreground-color: var(--foreground-color-light);
+  --text-color: var(--text-color-light);
+
+  --primary-color: var(--primary-color-light);
+  --secondary-color: var(--secondary-color-light);
+
+  --success-color: var(--success-color-light);
+  --failure-color: var(--failure-color-light);
+}
+
+.dark {
+  --background-color: var(--background-color-dark);
+  --background-color-alt: var(--background-color-alt-dark);
+  --foreground-color: var(--foreground-color-dark);
+  --text-color: var(--text-color-dark);
+
+  --primary-color: var(--primary-color-dark);
+  --secondary-color: var(--secondary-color-dark);
+
+  --success-color: var(--success-color-dark);
+  --failure-color: var(--failure-color-dark);
 }
 
 .material-symbols-outlined {
@@ -32,6 +75,7 @@
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
+  color: white;
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
 }
@@ -39,7 +83,6 @@
 html {
   width: 100%;
   height: 100%;
-  
 }
 
 body {
@@ -55,6 +98,7 @@ body {
   font-family: "Noto Emoji";
   font-family: "Noto Serif", serif;
   font-size: 30px;
+  color: var(--text-color);
 
   .material-symbols-outlined {
     font-size: 50px;
@@ -62,18 +106,59 @@ body {
 }
 
 a {
-  color: black;
+  color: var(--text-color);
   text-underline-offset: 0.11em;
   text-decoration-thickness: 0.09em;
-  text-decoration-color: var(--accent-one);
+  text-decoration-color: var(--secondary-color);
 
   &:hover {
-    text-decoration-color: black;
+    text-decoration-color: var(--primary-color);
   }
 }
 
 header  {
   padding: 0px var(--space-between);
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+button#dark-mode {
+  background-color: transparent;
+  box-shadow: none;
+  margin: auto 0px;
+  flex-grow: 0;
+
+  &:hover {
+    transform: none;
+    box-shadow: none;
+
+    span {
+      color: var(--primary-color);
+    }
+  }
+
+  span {
+    color: var(--text-color);
+  }
+
+  &.set-light {
+    #light-mode-icon {
+      display: none;
+    }
+    #dark-mode-icon {
+      display: block;
+    }
+  }
+  &.set-dark {
+    #light-mode-icon {
+      display: block;
+    }
+    #dark-mode-icon {
+      display: none;
+    }
+  }
 }
 
 textarea, #response-field {
@@ -93,7 +178,7 @@ textarea, #response-field {
 
   border: none;
   outline: none;
-  outline-color: var(--accent-one);
+  outline-color: var(--secondary-color);
   border-radius: var(--border-radius);
 
   transition: height 0.3s ease-in-out;
@@ -102,13 +187,13 @@ textarea, #response-field {
   &:focus {
     outline-width: var(--border-width);
     outline-style: solid;
-    outline-color: var(--accent-one);
+    outline-color: var(--secondary-color);
     box-shadow: none;
   }
 }
 
 #response-field {
-  border: var(--border-width) solid var(--foreground-color);
+  border: var(--border-width) solid var(--primary-color);
   background-color: transparent;
   flex-grow: 1;
 
@@ -180,8 +265,8 @@ textarea, #response-field {
 }
 
 button {
-  background-color: var(--foreground-color);
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--text-color);
 
   border: none;
   border-radius: var(--border-radius);
@@ -198,7 +283,7 @@ button {
   }
 
   &.low-importance {
-    background-color: var(--accent-one);
+    background-color: var(--secondary-color);
     flex-grow: 1;
 
     &[disabled] {
@@ -224,10 +309,10 @@ button {
   right: var(--space-between);
   top: var(--space-between);
 
-  background-color: var(--accent-one);
-  color: white;
+  background-color: var(--secondary-color);
   font-family: monospace;
   box-shadow: var(--shadow-default);
+  color: var(--text-color);
 
   max-width: 50%;
   padding: var(--space-between);
@@ -255,15 +340,15 @@ button {
 
   &.info, &.error, &.success {
     opacity: 1;
-    background-color: var(--accent-one);
+    background-color: var(--secondary-color);
   } 
 
   &.error {
-    background-color: var(--accent-three);
+    background-color: var(--failure-color);
   }
 
   &.success {
-    background-color: var(--accent-two);
+    background-color: var(--success-color);
   }
 
   &.info p::before {
