@@ -17,6 +17,8 @@ window.onload = function () {
 
   // make sure content is saved when switching tabs
   let content = {}
+  let response = {}
+
   let placeholder = {
     "entry": input_field.placeholder || "What's on your mind?",
     "question": "How did my sentiment change over the last week?",
@@ -155,6 +157,20 @@ window.onload = function () {
     content[old_tab] = input_field.value;
     input_field.value = content[new_tab] || "";
 
+    if (response_field.childNodes.length > 0) {
+      response[old_tab] = Array
+          .from(response_field.childNodes)
+          .map(node => node.cloneNode(true));
+    }
+    response_field.replaceChildren();
+
+    if(response[new_tab]) {
+      console.log(response[new_tab]);
+      response[new_tab].forEach((child) => {
+        response_field.appendChild(child);
+      });
+    }
+
     placeholder[old_tab] = input_field.placeholder;
     input_field.placeholder = placeholder[new_tab] || "";
 
@@ -202,7 +218,7 @@ window.onload = function () {
 
 function createDateLinksList(dates, parentElement) {
     if (parentElement.children.length > 0) {
-        parentElement.removeChild(parentElement.children[0]);
+        parentElement.replaceChildren();
     }
     const ul = document.createElement('ul');
     
