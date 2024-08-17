@@ -21,7 +21,11 @@ class Entry(BaseModel):
     def __eq__(self, other):
         if not isinstance(other, Entry):
             return False
-        return self.date == other.date and self.content == other.content
+        return (
+            self.date == other.date
+            and self.content == other.content
+            and self.metadata == other.metadata
+        )
 
     def __hash__(self):
         return hash((self.date, self.content))
