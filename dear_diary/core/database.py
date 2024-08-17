@@ -88,18 +88,24 @@ class GitBackend(Backend):
 
     def _read_entries_from_path(self, folder_path: str):
         entries = []
+
         for markdown_file in self._markdown_files_in(folder_path):
             with open(markdown_file, "r") as file:
                 date = os.path.basename(markdown_file).replace(".md", "")
                 file = frontmatter.load(file)
-                entries.append(
-                    Entry(
-                        # I might regret this formatting later
-                        date=datetime.date.fromisoformat(date),
-                        content=file.content,
-                        metadata=file.metadata,
+                try:
+                    entries.append(
+                        Entry(
+                            # I might regret this formatting later
+                            date=datetime.date.fromisoformat(date),
+                            content=file.content,
+                            metadata=file.metadata,
+                        )
                     )
-                )
+                except ValueError:
+                    print(
+                        f"Pydantic validation failed for entry. Please check entry {date}."
+                    )
         return entries
 
     def _write_entries_to_path(self, folder_path: str, entries: list[Entry]):
