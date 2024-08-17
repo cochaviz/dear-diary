@@ -1,12 +1,13 @@
 # Dear Diary
 
-![image](https://github.com/user-attachments/assets/fc3e8176-7a1a-4385-b2b5-3020d481e494)
 
 A small web application to keep track of a diary! My idea was to have a place where I could write down how I felt, and make it easy to learn from my experiences. Most importantly, I wanted to
 make sure that I don't forget about trails and tribulations of the past, to not forget past learnt lessons!
 
 So while this, right now, really just a place to write down my thoughts, I would like to hook this to a locally-running LLM. The idea being that if the LLM had access to this database that is my written experience of my life,
 I would be able to ask how I dealt with stuff in the past, how I've changed, etc. It sounds interesting, like an actual 'second brain', but I'm not sure whether it's actually useful... Only one way to find out! 😄
+
+![image](https://github.com/user-attachments/assets/fc3e8176-7a1a-4385-b2b5-3020d481e494)
 
 ## Requirements and Scope
 
