@@ -9,7 +9,9 @@ I would be able to ask how I dealt with stuff in the past, how I've changed, etc
 
 | Mobile UI | Desktop UI |
 | --- | --- |
-| ![image](https://github.com/user-attachments/assets/0b7a82b3-ee2d-493f-9fa9-4eda5d925e73) | ![image](https://github.com/user-attachments/assets/fc3e8176-7a1a-4385-b2b5-3020d481e494) |
+| ![image](https://github.com/user-attachments/assets/ad3e3d6b-b819-4a80-8841-222812b40cca) |![image](https://github.com/user-attachments/assets/1203949a-c4dd-4159-9753-e8d40efeebab) |
+| ![image](https://github.com/user-attachments/assets/ddcf1212-018a-4c42-94f9-6fc4f4548446) | ![image](https://github.com/user-attachments/assets/128c0a76-355f-47f6-a148-24b1103d66bc) |
+
 
 ## Requirements and Scope
 
