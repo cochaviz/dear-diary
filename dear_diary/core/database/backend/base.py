@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from dear_diary.core.models.entry import Entry
 
@@ -38,5 +39,15 @@ class Backend(ABC):
         Clears the backend of all entries.
 
         Ensure that this operation is not destructive.
+        """
+        raise NotImplementedError()
+
+    def last_update_time(self) -> Optional[float]:
+        """
+        Returns the time of the last update to the backend.
+
+        The time should be in seconds since the epoch.
+
+        Returns None if the database has uncommitted changes.
         """
         raise NotImplementedError()

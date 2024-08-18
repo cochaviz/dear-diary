@@ -139,3 +139,28 @@ def search(query: str, search_range: int = 7):
             query_date - search_delta, query_date + search_delta
         )
         return entries
+
+
+@app.get(
+    "/entry/all",
+    response_model=Entry,
+)
+def get_all_entries():
+    """
+    Returns all entries in the database. Also includes the last time the
+    database was updated.
+    """
+    with EntryManager(entry_manager_backend) as entry_manager:
+        entries = entry_manager.entries
+        info = entry_manager.get_info()
+
+        if not entries:
+            return JSONResponse(
+                status_code=404,
+                content={"message": "No entries found."},
+            )
+
+        return {
+            "entries": entries,
+            "info": info,
+        }

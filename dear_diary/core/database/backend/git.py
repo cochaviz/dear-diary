@@ -1,6 +1,7 @@
 import datetime
 import os
 from glob import glob
+from typing import Optional
 
 import frontmatter
 from git import InvalidGitRepositoryError, NoSuchPathError, Repo
@@ -101,3 +102,15 @@ class GitBackend(Backend):
         loss.
         """
         os.rename(str(self.repo.working_dir), f"{str(self.repo.working_dir)}_bak")
+
+    def last_update_time(self) -> Optional[float]:
+        """
+        Returns the time of the last update to the backend.
+
+        The time should be in seconds since the epoch.
+
+        Returns None if the database has uncommitted changes.
+        """
+        if self.repo.is_dirty():
+            return None
+        return self.repo.head.commit.committed_date
