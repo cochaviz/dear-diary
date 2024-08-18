@@ -5,9 +5,10 @@
   --background-color-alt-light: #E6DDD7;
   --foreground-color-light: #464f51;
   --text-color-light: #000;
+  --text-color-alt-light: #333;
 
   --primary-color-light: #ad5376;
-  --secondary-color-light: #cfa19b;
+  --secondary-color-light: #bb938d;
 
   --success-color-light: #00a693;
   --failure-color-light: #a63446;
@@ -18,12 +19,27 @@
   --background-color-alt-dark: #414555;
   --foreground-color-dark: #464f51;
   --text-color-dark: #fff;
+  --text-color-alt-dark: #bbb;
 
   --primary-color-dark: #ad5376;
   --secondary-color-dark: #6b4755;
 
   --success-color-dark: #05685c;
   --failure-color-dark: #57242b;
+
+  /* dark by deafult - prevents flickering */
+
+  --background-color: var(--background-color-dark);
+  --background-color-alt: var(--background-color-alt-dark);
+  --foreground-color: var(--foreground-color-dark);
+  --text-color: var(--text-color-dark);
+  --text-color-alt: var(--text-color-alt-dark);
+  
+  --primary-color: var(--primary-color-dark);
+  --secondary-color: var(--secondary-color-dark);
+
+  --success-color: var(--success-color-dark);
+  --failure-color: var(--failure-color-dark);
 
   /* layout parameters */
 
@@ -42,25 +58,13 @@
   --background-color-alt: var(--background-color-alt-light);
   --foreground-color: var(--foreground-color-light);
   --text-color: var(--text-color-light);
+  --text-color-alt: var(--text-color-alt-light);
 
   --primary-color: var(--primary-color-light);
   --secondary-color: var(--secondary-color-light);
 
   --success-color: var(--success-color-light);
   --failure-color: var(--failure-color-light);
-}
-
-.dark {
-  --background-color: var(--background-color-dark);
-  --background-color-alt: var(--background-color-alt-dark);
-  --foreground-color: var(--foreground-color-dark);
-  --text-color: var(--text-color-dark);
-
-  --primary-color: var(--primary-color-dark);
-  --secondary-color: var(--secondary-color-dark);
-
-  --success-color: var(--success-color-dark);
-  --failure-color: var(--failure-color-dark);
 }
 
 .material-symbols-outlined {
@@ -190,10 +194,14 @@ textarea, #response-field {
     outline-color: var(--secondary-color);
     box-shadow: none;
   }
+
+  &::placeholder {
+    color: var(--text-color-alt);
+  }
 }
 
 #response-field {
-  border: var(--border-width) solid var(--primary-color);
+  border: var(--border-width) solid var(--secondary-color);
   background-color: transparent;
   flex-grow: 1;
 

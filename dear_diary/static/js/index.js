@@ -31,7 +31,13 @@ window.onload = function () {
   search_button.addEventListener("pointerup",  () => { change_to_tab("search", search_tab_settings) });
   dark_mode_button.addEventListener("pointerup", toggle_color_scheme);
 
+  alert_box.addEventListener("pointerup", hide_alert);
+
   submit_button.addEventListener("pointerup", () => {
+    if (form.classList[0] = "entry" && input_field.value == remote_content) {
+      show_alert("No changes to save", "error");
+      return
+    }
     is_submitting = true;
 
     if (form.classList[0] == "entry") {
@@ -44,11 +50,6 @@ window.onload = function () {
     is_submitting = false;
   });
 
-  alert_box.addEventListener("pointerup", () => {
-    // has to be like this because otherwise it fucks up
-    // alert_box.style.opacity = 0;
-    alert_box.classList = [];
-  });
 
   // TODO Implement
   function post_question() {
@@ -211,8 +212,15 @@ window.onload = function () {
   }
 
   function show_alert(message, type) {
+    alert_box.hidden = false;
     alert_box.classList = [type];
     alert_message.innerHTML = message;
+  }
+
+  function hide_alert() {
+    alert_box.hidden = true
+    // alert_box.classList = ["hidden"];
+    // alert_message.innerHTML = "";
   }
 
   function set_color_scheme_light() {
@@ -221,15 +229,15 @@ window.onload = function () {
   }
 
   function set_color_scheme_dark() {
-    document.body.classList = ["dark"];
+    document.body.classList = []; // empty since dark is default
     dark_mode_button.classList = ["set-light"]
   }
 
   function toggle_color_scheme() {
-    if (document.body.classList[0] == "dark") {
-      set_color_scheme_light();
-    } else {
+    if (document.body.classList[0] == "light") {
       set_color_scheme_dark();
+    } else {
+      set_color_scheme_light();
     }
   }
 
