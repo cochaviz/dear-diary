@@ -27,7 +27,7 @@
   --success-color-dark: #05685c;
   --failure-color-dark: #57242b;
 
-  /* dark by deafult - prevents flickering */
+  /* dark by default - prevents flickering */
 
   --background-color: var(--background-color-dark);
   --background-color-alt: var(--background-color-alt-dark);

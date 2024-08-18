@@ -11,7 +11,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from dear_diary.core.config import origins
-from dear_diary.core.database import EntryManager, GitBackend
+from dear_diary.core.database import EntryManager
+from dear_diary.core.database.backend import GitBackend
 from dear_diary.core.models import Entry, Message
 from dear_diary.utils import module_path
 
