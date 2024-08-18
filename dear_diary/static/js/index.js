@@ -58,7 +58,7 @@ window.onload = function () {
   function search() {
     let query = input_field.value;
 
-    fetch(`/search?query=${query}`)
+    fetch(`/entry?query=${query}`)
       .then((response) => {
         if (!response.ok) {
           if (response.status == 400) {
@@ -81,9 +81,8 @@ window.onload = function () {
       });
   }
 
-
   function post_entry() {
-    fetch(`/entry/`, {
+    fetch(`/entry`, {
       method: "POST",
       body: JSON.stringify({
         date: date,

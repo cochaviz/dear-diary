@@ -1,6 +1,5 @@
 import datetime
 import os
-import sys
 from typing import Optional
 
 import parsedatetime
@@ -14,20 +13,9 @@ from fastapi.templating import Jinja2Templates
 from dear_diary.core.config import origins
 from dear_diary.core.database import EntryManager, GitBackend
 from dear_diary.core.models import Entry, Message
+from dear_diary.utils import module_path
 
 app = FastAPI()
-
-
-def we_are_frozen():
-    # All of the modules are built-in to the interpreter, e.g., by py2exe
-    return hasattr(sys, "frozen")
-
-
-def module_path():
-    if we_are_frozen():
-        return os.path.dirname(sys.executable)
-    return os.path.dirname(__file__)
-
 
 app.mount(
     "/static",
@@ -80,7 +68,7 @@ def show_diary(request: Request, date: Optional[str] = None):
 
 
 @app.post(
-    "/entry/",
+    "/entry",
     response_model=Message,
     responses={
         400: {"model": Message, "description": "Invalid entry data."},
@@ -117,7 +105,7 @@ def get_entry(entry_date: str):
 
 
 @app.get(
-    "/search",
+    "/entry",
     response_model=list[Entry],
     responses={
         400: {"model": Message, "description": "Invalid query or search range."},
@@ -125,7 +113,7 @@ def get_entry(entry_date: str):
     },
 )
 def search(query: str, search_range: int = 7):
-    if query == "":
+    if not query or query == "":
         return JSONResponse(
             status_code=422,
             content={"message": "Query cannot be empty."},
