@@ -6,11 +6,11 @@ from typing import Optional
 import frontmatter
 from git import InvalidGitRepositoryError, NoSuchPathError, Repo
 
-from dear_diary.core.database.backend.base import Backend
+from dear_diary.core.database.backend.base import DatabaseBackend
 from dear_diary.core.models.entry import Entry
 
 
-class GitBackend(Backend):
+class GitBackend(DatabaseBackend):
     """
     Manages entries using a git repository as the backend. The repository
     is assumed to be a local repository.
@@ -46,7 +46,7 @@ class GitBackend(Backend):
         self.repo = Repo.init(repo_path)
 
     def _markdown_files_in(self, folder_path: str):
-        return glob.glob(os.path.join(folder_path, "*.md"))
+        return glob(os.path.join(folder_path, "*.md"))
 
     def _read_entries_from_path(self, folder_path: str):
         entries = []

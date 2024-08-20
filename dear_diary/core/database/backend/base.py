@@ -4,7 +4,7 @@ from typing import Optional
 from dear_diary.core.models.entry import Entry
 
 
-class Backend(ABC):
+class DatabaseBackend(ABC):
     @abstractmethod
     def read_entries(self) -> list[Entry]:
         """

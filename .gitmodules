@@ -1,0 +1,3 @@
+[submodule "dear-backend"]
+	path = dear-backend
+	url = https://github.com/cochaviz/dear-backend

@@ -7,7 +7,7 @@ def we_are_frozen():
     return hasattr(sys, "frozen")
 
 
-def module_path():
+def module_path(file):
     if we_are_frozen():
         return os.path.dirname(sys.executable)
-    return os.path.dirname(__file__)
+    return os.path.dirname(file)

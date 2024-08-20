@@ -1,21 +1,32 @@
-from dear_diary.core.database.backend.base import Backend
+from dear_diary.core.database.backend.base import DatabaseBackend
 from dear_diary.core.models.entry import Entry
 
 
-class MultipleBackend(Backend):
-    def __init__(self, backends: list[Backend], use_first_as_reference=True):
-        self.backends = backends
+class MultipleBackend(DatabaseBackend):
+    def __init__(
+        self,
+        backends: set[DatabaseBackend],
+        # FIXME: would be nice if this was optional
+        reference: DatabaseBackend,
+    ):
+        self.backends: set[DatabaseBackend] = backends
+        self.reference: DatabaseBackend = reference
+
+        assert not reference or reference in backends
 
         if not len(self.backends) > 0:
             raise ValueError("At least one backend is required.")
-        if not self._check_synced() and not use_first_as_reference:
+        if not self._check_synced():
             raise ValueError(f"Backends {self.backends} are not in sync.")
 
     def _check_synced(self):
+        reference_entries = self.reference.read_entries()
+
         return all(
             [
-                backend.synced(self.backends[0].read_entries())
+                backend.synced(reference_entries)
                 for backend in self.backends
+                if backend != self.reference  # don't compare the reference to itself
             ]
         )
 

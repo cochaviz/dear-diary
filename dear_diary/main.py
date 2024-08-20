@@ -10,29 +10,28 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from dear_diary.core.config import origins
+from dear_diary.config import ALLOWED_ORIGINS, MODULE_PATH
 from dear_diary.core.database import EntryManager
 from dear_diary.core.database.backend import GitBackend
 from dear_diary.core.models import Entry, Message
-from dear_diary.utils import module_path
 
 app = FastAPI()
 
 app.mount(
     "/static",
-    StaticFiles(directory=os.path.join(module_path(), "static/")),
+    StaticFiles(directory=os.path.join(MODULE_PATH, "static")),
     name="static",
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-templates = Jinja2Templates(os.path.join(module_path(), "templates"))
+templates = Jinja2Templates(os.path.join(MODULE_PATH, "templates"))
 entry_manager_backend = GitBackend("entries")
 
 
@@ -69,7 +68,7 @@ def show_diary(request: Request, date: Optional[str] = None):
 
 
 @app.post(
-    "/entry",
+    "/api/entry",
     response_model=Message,
     responses={
         400: {"model": Message, "description": "Invalid entry data."},
@@ -88,7 +87,7 @@ def post_entry(entry: Entry):
 
 
 @app.get(
-    "/entry/{entry_date}",
+    "/api/entry/{entry_date}",
     response_model=Entry,
     responses={
         404: {"model": Message, "description": "Entry not found."},
@@ -106,7 +105,7 @@ def get_entry(entry_date: str):
 
 
 @app.get(
-    "/entry",
+    "/api/entry",
     response_model=list[Entry],
     responses={
         400: {"model": Message, "description": "Invalid query or search range."},
@@ -142,13 +141,17 @@ def search(query: str, search_range: int = 7):
 
 
 @app.get(
-    "/entry/all",
+    "/api/entry/all",
     response_model=Entry,
 )
 def get_all_entries():
     """
     Returns all entries in the database. Also includes the last time the
     database was updated.
+
+    NOTE: This can be a very expensive operation and should be used sparingly.
+    Really only meant as a temporary solution until a more efficient method
+    is necessary. Scale is assumed to be very small anyway.
     """
     with EntryManager(entry_manager_backend) as entry_manager:
         entries = entry_manager.entries

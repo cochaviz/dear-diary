@@ -1,3 +1,13 @@
 {
-    "python.analysis.typeCheckingMode": "basic"
+    "python.analysis.typeCheckingMode": "basic",
+    "cSpell.words": [
+        "langchain"
+    ],
+    "python.analysis.extraPaths": [
+        // backend package for dear-diary
+        // not included in the same package
+        // as it is optional and techinically
+        // a separate project
+        "./dear-backend"
+    ]
 }

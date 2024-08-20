@@ -1,13 +1,13 @@
 import datetime
 
-from dear_diary.core.database.backend.base import Backend
+from dear_diary.core.database.backend.base import DatabaseBackend
 from dear_diary.core.models.entry import Entry
 
 
 class EntryManager:
-    def __init__(self, backend: Backend):
+    def __init__(self, backend: DatabaseBackend):
         self.entries: list[Entry] = []
-        self.backend: Backend = backend
+        self.backend: DatabaseBackend = backend
 
     def add_entry(self, entry: Entry):
         """

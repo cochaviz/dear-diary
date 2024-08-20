@@ -59,7 +59,7 @@ window.onload = function () {
   function search() {
     let query = input_field.value;
 
-    fetch(`/entry?query=${query}`)
+    fetch(`/api/entry?query=${query}`)
       .then((response) => {
         if (!response.ok) {
           if (response.status == 400) {
@@ -83,7 +83,7 @@ window.onload = function () {
   }
 
   function post_entry() {
-    fetch(`/entry`, {
+    fetch(`/api/entry`, {
       method: "POST",
       body: JSON.stringify({
         date: date,
@@ -115,7 +115,7 @@ window.onload = function () {
   }
 
   function get_content() {
-    fetch(`/entry/${date}`)
+    fetch(`/api/entry/${date}`)
       .then((response) => {
         if (!response.ok) {
           if (response.status == 404) {
